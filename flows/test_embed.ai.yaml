@@ -1,0 +1,11 @@
+version: "0.1"
+
+default_model:
+  model: bedrock/meta.llama3-1-405b-instruct-v1:0
+  # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
+flow:
+  embedding_test:
+    action: embed2
+    text: hello
+    model: amazon.titan-embed-text-v2:0
+

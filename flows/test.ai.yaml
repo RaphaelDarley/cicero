@@ -1,0 +1,11 @@
+version: "0.1"
+
+default_model:
+  model: bedrock/meta.llama3-1-405b-instruct-v1:0
+  # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
+flow:
+  hello_world:
+    action: llm
+    prompt:
+      - text: who is the current democratic candidtate for us president?
+

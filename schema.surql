@@ -1,0 +1,12 @@
+USE NS cicero;
+USE DB cicero;
+
+DEFINE TABLE fact TYPE NORMAL SCHEMAFULL;
+DEFINE FIELD data ON fact TYPE string;
+DEFINE FIELD data ON fact TYPE string;
+DEFINE FIELD embed ON fact TYPE 
+
+
+DEFINE FIELD proves TYPE RELATION FROM fact TO fact SCHEMAFULL;
+
+
