@@ -4,3 +4,5 @@ env.5c
 env.*
 Lib
 Scripts
+*.db
+__pycache__
