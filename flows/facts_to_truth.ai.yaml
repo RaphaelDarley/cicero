@@ -22,10 +22,6 @@ flow:
         - text: |
             Here is your list of facts: 
             ```
-            ["Cats are mammals", 
-            "Mammals are animals", 
-            "Mammal mothers nurse their young with milk", 
-            "All hackers find cats cute", 
-            "Bob is a hacker"]
+            {{facts}}
             ```
-            Here is your hypothesis: "Cats are animals"
+            Here is your hypothesis: {{hypothesis}}
