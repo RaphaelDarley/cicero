@@ -9,7 +9,7 @@ flow:
     prompt:
         - role: system
         - text: |
-            You are to compile facts in a list format as a json array of strings. 
+            You are to compile facts in a list format as a json array of strings. Return only the json code, no additional text. 
             Each fact should directly follow from part of the information. Do not make logical leaps. 
             Ignore any numbers in square brackets such as [1]
         - role: user
