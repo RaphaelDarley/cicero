@@ -19,21 +19,33 @@ app.add_middleware(
 @app.post("/mock")
 async def mock(request: Request):
     return {
-    "isTrue": True,
-    "certaintyScore": 85,
-    "correctedFact": None, 
-    "graphData": { 
+      "isTrue": True,
+      "certaintyScore": 85,
+      "correctedFact": None,
+      "graphData": {
         "nodes": [
-        { "id": "1", "label": "Source A" },
-        { "id": "2", "label": "Source B" },
-        { "id": "3", "label": "Claim X" }
+          { "id": "1", "label": "Scientific Consensus" },
+          { "id": "2", "label": "foo" },
         ],
-        "links": [
-        { "source": "1", "target": "3" },
-        { "source": "2", "target": "3" }
-        ]
+        "links": [{ "source": "1", "target": "2" }],
+      },
     }
-    }
+    # return {
+    # "isTrue": True,
+    # "certaintyScore": 85,
+    # "correctedFact": None, 
+    # "graphData": { 
+    #     "nodes": [
+    #     { "id": "1", "label": "Source A" },
+    #     { "id": "2", "label": "Source B" },
+    #     { "id": "3", "label": "Claim X" }
+    #     ],
+    #     "links": [
+    #     { "source": "1", "target": "3" },
+    #     { "source": "2", "target": "3" }
+    #     ]
+    # }
+    # }
 
 @app.get("/")
 async def root(request: Request):
