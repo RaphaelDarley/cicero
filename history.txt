@@ -1,0 +1,32 @@
+#V2
+USE NS cicero;\nUSE DB cicero;
+DEFINE TABLE fact TYPE NORMAL SCHEMAFULL;\nDEFINE FIELD data ON fact TYPE string;\nDEFINE FIELD data ON fact TYPE string;\nDEFINE FIELD embed ON fact TYPE array<float, 1024>;
+DEFINE TABLE related TYPE RELATION FROM fact TO fact SCHEMAFULL;\nDEFINE FIELD kind on related TYPE string ASSERT $value INSIDE ["proves", "disproves", "unrelated"]; 
+let $record = create foo:100
+$record
+let $record = (create foo)
+$record
+let $record = (create only foo)
+$record
+create fact set data = "first fact", embed = []
+create fact set data = "second fact", embed = []
+relate fact:tvabxy0rexgdkr5sb4pe->related->fact:f3lm5vyc1lqfc6nvf45t set kind = proves
+relate fact:tvabxy0rexgdkr5sb4pe->related->fact:f3lm5vyc1lqfc6nvf45t set kind = "proves"
+relate fact:tvabxy0rexgdkr5sb4pe->related->fact:f3lm5vyc1lqfc6nvf45t set kind = "proasdfsas"
+define function fn::add_rec($x: int, $y:int) {}
+define function fn::add_rec($x: int, $y:int) {if $x = 0 {return $y} else {return fn::add_rec($x-1, $y+1)}}
+fn::add_rec(1,2)
+select * from facts
+info for db
+remove function fn::add_rec
+info for db
+let $first = create only fact set data = "first fact", embed = []
+let $second = create only fact set data = "second fact", embed = []
+select * from fact
+relate $first->related->$second set kind = "proves"
+$second<-related
+$second<-related<-fact
+$second<-related<-fact.*
+return $second<-related<-fact fetch fact.id
+return $second<-related<-fact
+return $second<-related<-fact fetch fact
