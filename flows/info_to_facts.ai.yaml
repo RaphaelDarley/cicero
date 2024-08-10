@@ -1,0 +1,21 @@
+version: "0.1"
+
+default_model:
+  model: bedrock/meta.llama3-1-405b-instruct-v1:0
+  # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
+flow:
+  info_to_facts:
+    action: llm
+    prompt:
+        - role: system
+        - text: |
+            You are to compile facts in a list format as a json array of strings. Return only the json code, no additional text. 
+            Each fact should directly follow from part of the information. Do not make logical leaps. 
+            Ignore any numbers in square brackets such as [1]
+        - role: user
+        - text: |
+            Here is your information: 
+            ```
+            {{info}}
+            ```
+            List all facts contained in the information. 
