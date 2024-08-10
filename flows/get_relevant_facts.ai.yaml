@@ -1,0 +1,20 @@
+version: "0.1"
+
+default_model:
+  model: bedrock/meta.llama3-1-405b-instruct-v1:0
+  # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
+flow:
+  info_to_facts:
+    action: llm
+    prompt:
+        - role: system
+        - text: |
+            You are to extract the relevant facts from a paragraph. 
+            Return a json list of strings. Return only the json code, no backticks or other text. 
+            If there are no relevant facts, then return an empty list. 
+        - role: user
+        - text: |
+            Here is your paragraph: 
+            ```
+            {{para}}
+            ```
