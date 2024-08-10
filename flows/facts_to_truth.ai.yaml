@@ -1,0 +1,31 @@
+version: "0.1"
+
+default_model:
+  model: bedrock/meta.llama3-1-405b-instruct-v1:0
+  # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
+flow:
+  info_to_facts:
+    action: llm
+    prompt:
+        - role: system
+        - text: |
+            You are to conclude whether a hypothesis is proven, disproven, or neither from a list of facts. 
+            If any of the facts in the list contradict each other, then the hypothesis is neither proven nor disproven. 
+            If there is no contradiction and the hypothesis is a direct consequence of any one of the facts in the list, then the hypothesis is proven. 
+            If there is no contradiction and the negation of the hypothesis is proven, then the hypothesis is disproven. 
+            If neither the hypothesis nor its negation is proven, then the hypothesis is neither proven nor disproven. 
+            You should return PROVEN if the hypothesis is proven, DISPROVEN if it is disproven. 
+            If there is a contradiction, you should return NEITHER: CONTRADICTION. 
+            If there is no contradiction, but the hypothesis is neither proven nor disproven, you should return NEITHER: IRRELEVANT. 
+            You should not make logical leaps and you should not introduce any extra information. 
+        - role: user
+        - text: |
+            Here is your list of facts: 
+            ```
+            ["Cats are mammals", 
+            "Mammals are animals", 
+            "Mammal mothers nurse their young with milk", 
+            "All hackers find cats cute", 
+            "Bob is a hacker"]
+            ```
+            Here is your hypothesis: "Cats are animals"
