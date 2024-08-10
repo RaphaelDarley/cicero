@@ -1,1 +1,6 @@
-*env*
+.env
+env.1a
+env.5c
+env.*
+Lib
+Scripts
