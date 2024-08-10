@@ -10,7 +10,7 @@ function App() {
   const handleSubmit = async (statement) => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://your-backend-api-url/check-fact", {
+      const response = await fetch("http://localhost:8000/mock", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

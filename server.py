@@ -8,6 +8,24 @@ import json
 dotenv.load_dotenv(".env")
 app = FastAPI()
 
+@app.get("/mock")
+async def mock(request: Request):
+    return {
+    "isTrue": True,
+    "certaintyScore": 85,
+    "correctedFact": None, 
+    "graphData": { 
+        "nodes": [
+        { "id": "1", "label": "Source A" },
+        { "id": "2", "label": "Source B" },
+        { "id": "3", "label": "Claim X" }
+        ],
+        "links": [
+        { "source": "1", "target": "3" },
+        { "source": "2", "target": "3" }
+        ]
+    }
+    }
 
 @app.get("/")
 async def root(request: Request):
@@ -61,7 +79,17 @@ async def rec_fact_find(db: Surreal, fact: str):
     res = await check_flow.set_vars(hypothesis=fact, facts=others).run()
 
     print(res)
-    return "PROVEN" in res and "DISPROVEN" not in res
+    # return "PROVEN" in res and "DISPROVEN" not in res
+    if "DISPROVEN" in res:
+        return "DISPROVEN"
+    elif "PROVEN" in res:
+        return "PROVEN"
+    elif "NEITHER: IRRELEVANT" in res:
+        return "NEITHER: IRRELEVANT"
+    elif "NEITHER: CONTRADICTION" in res:
+        return "NEITHER: CONTRADICTION"
+    else:
+        return "ERROR"
 
 
     #split
