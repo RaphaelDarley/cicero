@@ -4,12 +4,13 @@ default_model:
   model: bedrock/meta.llama3-1-405b-instruct-v1:0
   # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
 flow:
-  info_to_facts:
+  get_relevant_facts:
     action: llm
     prompt:
         - role: system
         - text: |
-            You are to extract the relevant facts from a paragraph. 
+            You are to find all the relevant facts in the paragraph and list them. 
+            The hypothesis is not a relevant fact and should not be included in the list. 
             Return a json list of strings. Return only the json code, no backticks or other text. 
             If there are no relevant facts, then return an empty list. 
         - role: user
