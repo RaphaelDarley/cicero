@@ -4,11 +4,19 @@ from embed import embed
 import dotenv
 from aijson import Flow
 import json
+from fastapi.middleware.cors import CORSMiddleware
 
 dotenv.load_dotenv(".env")
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/mock")
+@app.post("/mock")
 async def mock(request: Request):
     return {
     "isTrue": True,
