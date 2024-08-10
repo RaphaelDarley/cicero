@@ -4,12 +4,13 @@ default_model:
   model: bedrock/meta.llama3-1-405b-instruct-v1:0
   # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
 flow:
-  info_to_prompt:
+  info_to_facts:
     action: llm
     prompt:
         - role: system
         - text: |
-            You are to compile facts in a list format using json. Each fact should directly follow from part of the information. Do not make logical leaps. 
+            You are to compile facts in a list format as a json array of strings. 
+            Each fact should directly follow from part of the information. Do not make logical leaps. 
             Ignore any numbers in square brackets such as [1]
         - role: user
         - text: |

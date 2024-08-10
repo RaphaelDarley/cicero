@@ -7,7 +7,7 @@ dotenv.load_dotenv(dotenv_path=".env")
 
 async def main():
 
-    flow = Flow.from_file("./flows/example.ai.yaml")
+    flow = Flow.from_file("./flows/info_to_facts.ai.yaml")
 
     res = await flow.run()
     print(res)
