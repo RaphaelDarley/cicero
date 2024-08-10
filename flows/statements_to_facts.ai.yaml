@@ -11,15 +11,12 @@ flow:
         - text: |
             You are to conclude new possible facts from a list of facts. 
             Each fact should be a direct consequence of one of the facts given to you, or the consequence of combining two facts given to you. 
+            Do not repeat information already given in the list of facts, even if it's phrased differently. You may return an empty list if you cannot conclude any new facts. 
             You will be given a list of facts as a json array of strings. 
             Format your new facts as a json list of strings. Return only the json code, no additional text and no backticks. 
         - role: user
         - text: |
             Here is your input: 
             ```
-            ["Cats are mammals", 
-            "Mammals are animals", 
-            "Mammal mothers nurse their young with milk", 
-            "All hackers find cats cute", 
-            "Bob is a hacker"]
+            {{ info }}
             ```
