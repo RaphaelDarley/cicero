@@ -19,15 +19,21 @@ flow:
 
             Your truth value is PROVEN if the hypothesis is proven, DISPROVEN if it is disproven, CONTRADICTION if there is a contradition, and IRRELEVANT otherwise. 
             Your relevant facts are those which are used to prove or disprove the hypothesis, or to show contradiction. 
-            Answer in the following format. You may list 0, 1, 2, or more relevant facts. 
+            Answer in the following format. You may list 0, 1, 2, or more relevant facts.
+
+            When you explain how you use a fact you should explain the process and any steps, eg. if you are given the facts: [{id: fact:123, data: "the sun rises in the east"}]
+            then asked whether the sun rises in the West, you should say it's DISPROVED because something can only rise in the east or west, because they are opposites,
+            this allows a reader to understand the logic steps taken without requiring any outside information.
             ```
-            Hypothesis: ... 
-            Conclusion: [truth value]
-            Relevant facts: 
-              * [Fact 1] (How it was used)
-              * [Fact 2] (How it was used)
+            {"hypothesis": "...", 
+            "conclusion": "[truth value]",
+            "relevant_facts": [
+              {"data": "[Fact 1]", "id": "[id of Fact 1 given in the input]", "use": "[how it was used]"},
+              {"data": "[Fact 2]", "id": "[id of Fact 2 given in the input]", "use": "[how it was used]"},
               ...
+              ]}
             ```
+            return only json as described above, with no other text or backticks
         - role: user
         - text: |
             Here is your list of facts: 

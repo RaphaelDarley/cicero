@@ -16,46 +16,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/mock")
-async def mock(request: Request):
-    return {
-      "isTrue": True,
-      "certaintyScore": 85,
-      "correctedFact": None,
-      "graphData": {
-        "nodes": [
-          { "id": "1", "label": "Scientific Consensus" },
-          { "id": "2", "label": "foo" },
-        ],
-        "links": [{ "source": "1", "target": "2" }],
-      },
-    }
-    # return {
-    # "isTrue": True,
-    # "certaintyScore": 85,
-    # "correctedFact": None, 
-    # "graphData": { 
-    #     "nodes": [
-    #     { "id": "1", "label": "Source A" },
-    #     { "id": "2", "label": "Source B" },
-    #     { "id": "3", "label": "Claim X" }
-    #     ],
-    #     "links": [
-    #     { "source": "1", "target": "3" },
-    #     { "source": "2", "target": "3" }
-    #     ]
-    # }
-    # }
-
 @app.get("/")
 async def root(request: Request):
     body = await request.body()
     statement = body.decode("utf-8")
-    facts = await search(statement)
-    print(facts)
-    return {"proven": facts}
+    result = await search(statement)
+    print(result)
+    return result
 
-@app.post("/")
+@app.post("/ingest")
 async def ingest(request: Request):
     body = await request.body()
     body_str = body.decode("utf-8")
@@ -64,6 +33,10 @@ async def ingest(request: Request):
     await db.connect()
     await db.use('cicero', 'cicero')
 
+    doc_embed = await embed(body_str)
+    doc_res = await db.create('fact', {"data":body_str, "embed": doc_embed, "source": "ingested by endpoint"})
+    doc_record = doc_res[0]["id"]
+
     #split
     split_flow = Flow.from_file("./flows/info_to_facts.ai.yaml").set_vars(info=body_str)
     fact_str = await split_flow.run()
@@ -71,10 +44,12 @@ async def ingest(request: Request):
 
     #embed and insert
     for f in facts:
-        f_embed = embed(f)
+        f_embed = await embed(f)
         if f_embed is None: continue
         res = await db.create('fact', {"data": f, "embed": f_embed})
         print(res)
+        fact_id = res[0]["id"]
+        await db.query("RELATE $doc->related->$fact SET kind ='proves'", {"fact": fact_id, "doc": doc_record})
         
     return None
 
@@ -83,31 +58,46 @@ async def search(statement: str):
     db = Surreal("ws://127.0.0.1:8001/rpc")
     await db.connect()
     await db.use('cicero', 'cicero')
-    # facts = await db.select('fact')
 
     return await rec_fact_find(db, statement)
 
 async def rec_fact_find(db: Surreal, fact: str):
     #embed
-    fact_embed = embed(fact)
+    fact_embed = await embed(fact)
 
     #lookup
     others = await db.query("SELECT id, data FROM fact WHERE embed <|5|> $input", vars={"input": fact_embed})
+    facts = others[0]["result"]
+    print(facts)
 
     #check
     check_flow = Flow.from_file("flows/facts_to_truth.ai.yaml")
-    res = await check_flow.set_vars(hypothesis=fact, facts=others).run()
+    res_str = await check_flow.set_vars(hypothesis=fact, facts=others).run()
+    print(res_str)
+    res = json.loads(res_str)
 
     print(res)
-    # return "PROVEN" in res and "DISPROVEN" not in res
-    if "DISPROVEN" in res:
-        return "DISPROVEN"
-    elif "PROVEN" in res:
-        return "PROVEN"
-    elif "NEITHER: IRRELEVANT" in res:
-        return "NEITHER: IRRELEVANT"
-    elif "NEITHER: CONTRADICTION" in res:
-        return "NEITHER: CONTRADICTION"
+    conc= res["conclusion"]
+    if conc == "DISPROVEN":
+        return res
+        # return "DISPROVEN"
+    elif conc == "PROVEN":
+        # add to graph then return
+        res_embed = await embed(res["hypothesis"])
+        res_id = (await db.create("fact", {"data": res["hypothesis"], "embed": res_embed}))[0]["id"]
+        # fact_ids = [rel["id"] for rel in res["relevant_facts"]]
+        # await db.query("RELATE $facts->related->$new SET kind ='proves', reason=$reason", {"new": res_id, "facts": fact_ids, "reason":})
+        for rel in res["relevant_facts"]:
+            await db.query("RELATE $fact->related->$new SET kind ='proves', reason=$reason", {"new": res_id, "fact": rel["id"], "reason":rel["use"]})
+
+
+        return res
+        # return "PROVEN"
+    elif conc == "IRRELEVANT":
+        # split and recurse
+        return "IRRELEVANT"
+    elif conc == "CONTRADICTION":
+        return "CONTRADICTION"
     else:
         return "ERROR"
 
