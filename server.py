@@ -5,7 +5,9 @@ import dotenv
 from aijson import Flow
 import json
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 import wikipediaapi
+import static
 
 dotenv.load_dotenv(".env")
 app = FastAPI()
@@ -16,6 +18,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/basic", response_class=HTMLResponse)
+def basic_page():
+    return static.page()
+
+
 
 @app.api_route("/query", methods=["POST", "GET"])
 async def root(request: Request):
