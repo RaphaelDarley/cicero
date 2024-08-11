@@ -45,7 +45,10 @@ async def ingest_wiki(request: Request):
     # Check if the page exists
     if page.exists():
         print(f"intesting Wikipedia article on: {body_str}")
-        return await ingest_str(page.text, source=page.canonicalurl)
+        # return await ingest_str(page.text, source=page.canonicalurl)
+        for section in page.sections:
+            await ingest_str(section.text, source=f"{page.canonicalurl}#{page.title}")
+        return None
     else:
         return f"No Wikipedia article found for the topic: {body_str}"
 
@@ -58,6 +61,9 @@ async def ingest(request: Request):
     await ingest_str(body_str)
 
 async def ingest_str(doc: str, source=None):
+    if len(doc) < 2:
+        return None
+
     db = Surreal("ws://127.0.0.1:8001/rpc")
     await db.connect()
     await db.use('cicero', 'cicero')

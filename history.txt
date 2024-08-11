@@ -94,3 +94,7 @@ select use, out.id from only $rels
 select use, out.id from $rels
 select use, out.id as id, out.data as data from $rels
 select reason, out.id as id, out.data as data from $rels
+<option<string>> null
+select * from fact where data ~ "vatican"
+select * from fact where data ~ "Vatican"
+exit
