@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 import wikipediaapi
 import static
+import typing
+from starlette.responses import Response
 
 dotenv.load_dotenv(".env")
 app = FastAPI()
@@ -19,13 +21,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+class PrettyJSONResponse(Response):
+    media_type = "application/json"
+
+    def render(self, content: typing.Any) -> bytes:
+        return json.dumps(
+            content,
+            ensure_ascii=False,
+            allow_nan=False,
+            indent=4,
+            separators=(", ", ": "),
+        ).encode("utf-8")
+
 @app.get("/basic", response_class=HTMLResponse)
 def basic_page():
     return static.page()
 
 
 
-@app.api_route("/query", methods=["POST", "GET"])
+@app.api_route("/query", methods=["POST", "GET"], response_class=PrettyJSONResponse)
 async def root(request: Request):
     body = await request.body()
     statement = body.decode("utf-8")
