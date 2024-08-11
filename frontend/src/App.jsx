@@ -12,7 +12,7 @@ function App() {
     setIsLoading(true);
     try {
       // Replace this with your actual API call
-      const response = await fetch("YOUR_BACKEND_API_URL", {
+      const response = await fetch("https://cicero.darley.dev/api/query", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

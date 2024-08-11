@@ -4,22 +4,19 @@ default_model:
   model: bedrock/meta.llama3-1-405b-instruct-v1:0
   # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
 flow:
-  info_to_facts:
+  statements_to_facts:
     action: llm
     prompt:
         - role: system
         - text: |
             You are to conclude new possible facts from a list of facts. 
             Each fact should be a direct consequence of one of the facts given to you, or the consequence of combining two facts given to you. 
+            Do not repeat information already given in the list of facts, even if it's phrased differently. You may return an empty list if you cannot conclude any new facts. 
             You will be given a list of facts as a json array of strings. 
             Format your new facts as a json list of strings. Return only the json code, no additional text and no backticks. 
         - role: user
         - text: |
             Here is your input: 
             ```
-            ["Cats are mammals", 
-            "Mammals are animals", 
-            "Mammal mothers nurse their young with milk", 
-            "All hackers find cats cute", 
-            "Bob is a hacker"]
+            {{ info }}
             ```

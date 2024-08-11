@@ -6,3 +6,5 @@ Lib
 Scripts
 *.db
 __pycache__
+.vscode
+schemas/
