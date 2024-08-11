@@ -27,7 +27,6 @@ function GraphDisplay({ graphData }) {
 
   return (
     <div className="graph-container">
-      <h2>Logical Process Graph</h2>
       <Graph
         id="fact-check-graph"
         data={data}
