@@ -79,6 +79,8 @@ async def ingest(request: Request):
 async def ingest_str(doc: str, source=None):
     if len(doc) < 2:
         return None
+    if len(doc) > 40000:
+        return None
 
     db = Surreal("ws://127.0.0.1:8001/rpc")
     await db.connect()
