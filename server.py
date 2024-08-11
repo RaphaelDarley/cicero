@@ -44,9 +44,10 @@ async def ingest_wiki(request: Request):
     
     # Check if the page exists
     if page.exists():
-        print(f"intesting Wikipedia article on: {body_str}")
-        # return await ingest_str(page.text, source=page.canonicalurl)
+        print(f"ingesting Wikipedia article on: {body_str}")
+        await ingest_str(page.text, source=page.canonicalurl)
         for section in page.sections:
+            doc = f"topic: {page.title} text: {section.text}"
             await ingest_str(section.text, source=f"{page.canonicalurl}#{page.title}")
         return None
     else:
