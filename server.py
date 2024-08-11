@@ -5,6 +5,7 @@ import dotenv
 from aijson import Flow
 import json
 from fastapi.middleware.cors import CORSMiddleware
+import wikipediaapi
 
 dotenv.load_dotenv(".env")
 app = FastAPI()
@@ -16,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/query")
 async def root(request: Request):
     body = await request.body()
     statement = body.decode("utf-8")
@@ -24,21 +25,39 @@ async def root(request: Request):
     print(result)
     return result
 
+@app.post("/ingest-wiki")
+async def ingest_wiki(request: Request):
+    body = await request.body()
+    body_str = body.decode("utf-8")
+    wiki_wiki = wikipediaapi.Wikipedia('Cicero (cicero@darley.dev)', 'en')
+    
+    # Get the page for the given topic
+    page = wiki_wiki.page(body_str)
+    
+    # Check if the page exists
+    if page.exists():
+        return await ingest_str(page.text)
+    else:
+        return f"No Wikipedia article found for the topic: {body_str}"
+
+
 @app.post("/ingest")
 async def ingest(request: Request):
     body = await request.body()
     body_str = body.decode("utf-8")
+    await ingest_str(body_str)
 
+async def ingest_str(doc: str, source=None):
     db = Surreal("ws://127.0.0.1:8001/rpc")
     await db.connect()
     await db.use('cicero', 'cicero')
 
-    doc_embed = await embed(body_str)
-    doc_res = await db.create('fact', {"data":body_str, "embed": doc_embed, "source": "ingested by endpoint"})
+    doc_embed = await embed(doc)
+    doc_res = await db.create('fact', {"data":doc, "embed": doc_embed, "source": source})
     doc_record = doc_res[0]["id"]
 
     #split
-    split_flow = Flow.from_file("./flows/info_to_facts.ai.yaml").set_vars(info=body_str)
+    split_flow = Flow.from_file("./flows/info_to_facts.ai.yaml").set_vars(info=doc)
     fact_str = await split_flow.run()
     facts = json.loads(fact_str)
 
@@ -49,7 +68,7 @@ async def ingest(request: Request):
         res = await db.create('fact', {"data": f, "embed": f_embed})
         print(res)
         fact_id = res[0]["id"]
-        await db.query("RELATE $doc->related->$fact SET kind ='proves'", {"fact": fact_id, "doc": doc_record})
+        await db.query("RELATE $doc->proves->$fact SET kind ='proves'", {"fact": fact_id, "doc": doc_record})
         
     return None
 
@@ -86,10 +105,12 @@ async def rec_fact_find(db: Surreal, fact: str):
         res_embed = await embed(res["hypothesis"])
         res_id = (await db.create("fact", {"data": res["hypothesis"], "embed": res_embed}))[0]["id"]
         # fact_ids = [rel["id"] for rel in res["relevant_facts"]]
-        # await db.query("RELATE $facts->related->$new SET kind ='proves', reason=$reason", {"new": res_id, "facts": fact_ids, "reason":})
+        # await db.query("RELATE $facts->proves->$new SET kind ='proves', reason=$reason", {"new": res_id, "facts": fact_ids, "reason":})
         for rel in res["relevant_facts"]:
-            await db.query("RELATE $fact->related->$new SET kind ='proves', reason=$reason", {"new": res_id, "fact": rel["id"], "reason":rel["use"]})
+            await db.query("RELATE $fact->proves->$new SET kind ='proves', reason=$reason", {"new": res_id, "fact": rel["id"], "reason":rel["use"]})
 
+        tree = await db.query("fn::get_tree($input)", {"input": res_id})
+        res["tree"] = tree[0]["result"]
 
         return res
         # return "PROVEN"

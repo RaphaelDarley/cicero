@@ -5228,6 +5228,20 @@ files = [
 ]
 
 [[package]]
+name = "wikipedia-api"
+version = "0.6.0"
+description = "Python Wrapper for Wikipedia"
+optional = false
+python-versions = "*"
+files = [
+    {file = "Wikipedia-API-0.6.0.tar.gz", hash = "sha256:61e94921cca9ec68e92aa5f258261d6a88b7baa960f9acfcb0c9c2c525dcb3ff"},
+    {file = "Wikipedia_API-0.6.0-py3-none-any.whl", hash = "sha256:6dfd6b3b680e342a3843fe954049c5784c1a67fadc0060f9d1696d1d0e41ecfb"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "wrapt"
 version = "1.16.0"
 description = "Module for decorators, wrappers and monkey patching."
@@ -5427,4 +5441,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "338325ca6c0533b07b6569090218e588b6a1ea3c35fbcc15b1222ec9bb04013d"
+content-hash = "e48473afd28d0f70210e9563c49ec484c0352057b2f82cf5d1abe582b286145f"

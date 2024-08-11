@@ -29,7 +29,7 @@ DEFINE FUNCTION fn::get_tree($root: record<fact>) {
 
 	LET $rels = (SELECT VALUE <-proves FROM ONLY $root);
 
-	LET $out = (SELECT reason, in.id AS id, in.data AS data, fn::get_tree(in.id) AS related FROM $rels);
+	LET $out = (SELECT reason, in.id AS id, in.data AS data, in.source as source, fn::get_tree(in.id) AS related FROM $rels);
 
 	RETURN $out;
 

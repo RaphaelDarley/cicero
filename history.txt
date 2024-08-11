@@ -30,3 +30,67 @@ $second<-related<-fact.*
 return $second<-related<-fact fetch fact.id
 return $second<-related<-fact
 return $second<-related<-fact fetch fact
+info for db
+DEFINE INDEX embed_index ON fact FIELDS embed MTREE DIMENSION 1024 DIST COSINE;
+array::len([])
+delete fact
+select * from fact
+select data from fact
+select data, id from fact
+select data from fact where embed <|5|> fact:4fgsn3slvk7ta85foxjx.embed
+create fact set embed = fact:4fgsn3slvk7ta85foxjx.embed, data = "test same"
+select data from fact where embed <|5|> fact:4fgsn3slvk7ta85foxjx.embed
+select data from fact where embed = fact:4fgsn3slvk7ta85foxjx.embed
+DEFINE INDEX embed_index ON fact FIELDS embed MTREE DIMENSION 1024 DIST COSINE;
+select data from fact where embed <|1|> fact:4fgsn3slvk7ta85foxjx.embed
+LET $input_embed = fact:4fgsn3slvk7ta85foxjx.embed
+$input_embed[1]
+select data from fact where embed = $input
+select data from fact where embed = fact:4fgsn3slvk7ta85foxjx.embed
+$input = fact:4fgsn3slvk7ta85foxjx.embed
+return $input = fact:4fgsn3slvk7ta85foxjx.embed
+<array> $input
+ $input
+select data from fact where embed <|1|> fact:4fgsn3slvk7ta85foxjx.embed
+select data from fact where embed <|1|> $input
+select data from fact where embed <|3|> $input
+fact:4fgsn3slvk7ta85foxjx.*
+DEFINE FIELD source ON fact TYPE option<string>;
+delete fact
+select * from fact
+select data from fact
+select data, id from fact
+fact:hzakuwez6n1jritq761a->related
+fact:hzakuwez6n1jritq761a->related->fact
+select * from related
+select ->related->fact.id from fact:hzakuwez6n1jritq761a;
+select ->related->fact.id as consequents from fact:hzakuwez6n1jritq761a;
+select id, data from fact where data ~ "California"
+select <-related<-fact.data from fact:ml6tq0vjnawwk9otnp1l
+DEFINE FIELD reason on related TYPE option<string>;
+select id, data from fact where data ~ "San"
+select id, data from fact where data ~ "San Francisco"
+select * from related where reason ~ 'San Francisco'
+fact:cphumk4xcbukjd9aobbb.data
+select id from fact where data = "New York City and San Francisco are in the same country"
+let $root = fact:uhir3k89gkikf5rljfn6
+SELECT <-related<-fact.id from $root
+SELECT VALUE <-related<-fact.id from $root
+SELECT VALUE <-related<-fact.id from ONLY $root
+LET $rels = (SELECT VALUE <-related<-fact.id from ONLY $root)
+$rels
+LET $rels = (select id, data, source from (SELECT VALUE <-related<-fact.id from ONLY $root))
+$rels
+DEFINE FUNCTION fn::add_k_v($obj: object, $key: any, $val: any) {\n\n	LET $es = object::entries($obj);\n\n	LET $new_es = array::append($es, [\n		$key,\n		$val\n	]);\n\n	RETURN object::from_entries($new_es);\n\n}\n	PERMISSIONS FULL\n;
+$root
+let $rels = select <-related from $root
+let $rels = select <-related<-fact from $root
+SELECT VALUE <-related<-fact.id from $root
+$rels
+SELECT VALUE <-related from $root
+SELECT VALUE <-related from only $root
+let $rels = SELECT VALUE <-related from only $root
+select use, out.id from only $rels
+select use, out.id from $rels
+select use, out.id as id, out.data as data from $rels
+select reason, out.id as id, out.data as data from $rels
