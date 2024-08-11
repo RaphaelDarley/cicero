@@ -17,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/query")
+@app.api_route("/query", methods=["POST", "GET"])
 async def root(request: Request):
     body = await request.body()
     statement = body.decode("utf-8")
@@ -25,7 +25,7 @@ async def root(request: Request):
     print(result)
     return result
 
-@app.post("/ingest-wiki")
+@app.api_route("/ingest-wiki", methods=["POST", "GET"])
 async def ingest_wiki(request: Request):
     body = await request.body()
     body_str = body.decode("utf-8")
@@ -42,7 +42,7 @@ async def ingest_wiki(request: Request):
         return f"No Wikipedia article found for the topic: {body_str}"
 
 
-@app.post("/ingest")
+@app.api_route("/ingest", methods=["POST", "GET"])
 async def ingest(request: Request):
     body = await request.body()
     body_str = body.decode("utf-8")
