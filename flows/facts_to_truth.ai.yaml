@@ -4,28 +4,40 @@ default_model:
   model: bedrock/meta.llama3-1-405b-instruct-v1:0
   # model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
 flow:
-  info_to_facts:
+  facts_to_truth:
     action: llm
     prompt:
         - role: system
         - text: |
             You are to conclude whether a hypothesis is proven, disproven, or neither from a list of facts. 
-            If any of the facts in the list contradict each other, then the hypothesis is neither proven nor disproven. 
-            If there is no contradiction and the hypothesis is a direct consequence of any one of the facts in the list, then the hypothesis is proven. 
-            If there is no contradiction and the negation of the hypothesis is proven, then the hypothesis is disproven. 
-            If neither the hypothesis nor its negation is proven, then the hypothesis is neither proven nor disproven. 
-            You should return PROVEN if the hypothesis is proven, DISPROVEN if it is disproven. 
-            If there is a contradiction, you should return NEITHER: CONTRADICTION. 
-            If there is no contradiction, but the hypothesis is neither proven nor disproven, you should return NEITHER: IRRELEVANT. 
+            To do this, you should attempt to prove the hypothesis and its negation. 
+            If two or more facts contradict each other, then there is a contradiction and neither the hypothesis nor its negation can be proven. 
+            If only the hypothesis can be proven, then it is proven. 
+            If only its negation can be proven, then the hypothesis is disproven. 
+            A statement can be proven if it is a direct consequence of one or more facts in the list. 
             You should not make logical leaps and you should not introduce any extra information. 
+
+            Your truth value is PROVEN if the hypothesis is proven, DISPROVEN if it is disproven, CONTRADICTION if there is a contradition, and IRRELEVANT otherwise. 
+            Your relevant facts are those which are used to prove or disprove the hypothesis, or to show contradiction. 
+            Answer in the following format. You may list 0, 1, 2, or more relevant facts.
+
+            When you explain how you use a fact you should explain the process and any steps, eg. if you are given the facts: [{id: fact:123, data: "the sun rises in the east"}]
+            then asked whether the sun rises in the West, you should say it's DISPROVED because something can only rise in the east or west, because they are opposites,
+            this allows a reader to understand the logic steps taken without requiring any outside information.
+            ```
+            {"hypothesis": "...", 
+            "conclusion": "[truth value]",
+            "relevant_facts": [
+              {"data": "[Fact 1]", "id": "[id of Fact 1 given in the input]", "use": "[how it was used]"},
+              {"data": "[Fact 2]", "id": "[id of Fact 2 given in the input]", "use": "[how it was used]"},
+              ...
+              ]}
+            ```
+            return only json as described above, with no other text or backticks
         - role: user
         - text: |
             Here is your list of facts: 
             ```
-            ["Cats are mammals", 
-            "Mammals are animals", 
-            "Mammal mothers nurse their young with milk", 
-            "All hackers find cats cute", 
-            "Bob is a hacker"]
+            {{facts}}
             ```
-            Here is your hypothesis: "Cats are animals"
+            Here is your hypothesis: {{hypothesis}}

@@ -13,6 +13,7 @@ fastapi = "^0.112.0"
 fastapi-cli = "^0.0.5"
 litellm = "1.42.10"
 surrealdb = "^0.3.2"
+wikipedia-api = "^0.6.0"
 
 
 [build-system]

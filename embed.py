@@ -6,7 +6,7 @@ from aijson import register_action
 # dotenv.load_dotenv(".env")
 
 @register_action
-def embed(text: str | list[str], model: str='amazon.titan-embed-text-v2:0') -> list[float] | None:
+async def embed(text: str | list[str], model: str='amazon.titan-embed-text-v2:0') -> list[float] | None:
     """
     embed a string or strings
     """
