@@ -85,17 +85,17 @@ def page() -> str:
                     const response = await fetch(`${baseUrl}${endpoint}`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'text/plain',
                         },
-                        body: JSON.stringify({ message }),
+                        body: message,
                     });
 
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
-                    const data = await response.json();
-                    result.innerHTML = `<h3>Response:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    const data = await response.text();
+                    result.innerHTML = `<h3>Response:</h3><pre>${data}</pre>`;
                 } catch (error) {
                     result.innerHTML = `<h3>Error:</h3><p>${error.message}</p>`;
                 } finally {
