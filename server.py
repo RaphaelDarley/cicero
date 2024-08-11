@@ -36,7 +36,7 @@ async def ingest_wiki(request: Request):
     
     # Check if the page exists
     if page.exists():
-        return await ingest_str(page.text)
+        return await ingest_str(page.text, source=page.canonicalurl)
     else:
         return f"No Wikipedia article found for the topic: {body_str}"
 
@@ -53,7 +53,12 @@ async def ingest_str(doc: str, source=None):
     await db.use('cicero', 'cicero')
 
     doc_embed = await embed(doc)
-    doc_res = await db.create('fact', {"data":doc, "embed": doc_embed, "source": source})
+
+    vars={"data":doc, "embed": doc_embed} 
+    if source is not None:
+        vars["source"] = source
+
+    doc_res = await db.create('fact', vars)
     doc_record = doc_res[0]["id"]
 
     #split
