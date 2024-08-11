@@ -36,6 +36,7 @@ async def ingest_wiki(request: Request):
     
     # Check if the page exists
     if page.exists():
+        print(f"intesting Wikipedia article on: {body_str}")
         return await ingest_str(page.text, source=page.canonicalurl)
     else:
         return f"No Wikipedia article found for the topic: {body_str}"
@@ -45,6 +46,7 @@ async def ingest_wiki(request: Request):
 async def ingest(request: Request):
     body = await request.body()
     body_str = body.decode("utf-8")
+    print(f"ingesting: {body_str}")
     await ingest_str(body_str)
 
 async def ingest_str(doc: str, source=None):
@@ -60,11 +62,15 @@ async def ingest_str(doc: str, source=None):
 
     doc_res = await db.create('fact', vars)
     doc_record = doc_res[0]["id"]
+    print(f"added doc with id: {doc_record}")
 
     #split
     split_flow = Flow.from_file("./flows/info_to_facts.ai.yaml").set_vars(info=doc)
     fact_str = await split_flow.run()
-    facts = json.loads(fact_str)
+    try: 
+        facts = json.loads(fact_str)
+    except:
+        return "INVALID JSON: TRY AGAIN"
 
     #embed and insert
     for f in facts:

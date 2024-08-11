@@ -13,6 +13,10 @@ flow:
             Each fact should directly follow from part of the information. Do not make logical leaps. 
             Ignore any numbers in square brackets such as [1]
             Each fact should be independent and understandable without context, and should reference the proper noun the facts discuss instead of replacing them with pronouns. 
+            The output should be json with this schema:
+            [
+              "[first fact]", "[second fact]", ... 
+            ]
         - role: user
         - text: |
             Here is your information: 
