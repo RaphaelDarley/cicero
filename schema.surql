@@ -10,21 +10,6 @@ DEFINE INDEX embed_index ON fact FIELDS embed MTREE DIMENSION 1024 DIST COSINE T
 DEFINE TABLE proves TYPE RELATION FROM fact TO fact SCHEMAFULL;
 DEFINE FIELD reason on proves TYPE option<string>;
 
-DEFINE FUNCTION fn::add_k_v($obj: object, $key: any, $val: any) {
-
-	LET $es = object::entries($obj);
-
-	LET $new_es = array::append($es, [
-		$key,
-		$val
-	]);
-
-	RETURN object::from_entries($new_es);
-
-}
-	PERMISSIONS FULL
-;
-
 DEFINE FUNCTION fn::get_tree($root: record<fact>) {
 
 	LET $rels = (SELECT VALUE <-proves FROM ONLY $root);
