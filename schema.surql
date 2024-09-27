@@ -10,6 +10,9 @@ DEFINE INDEX embed_index ON fact FIELDS embed MTREE DIMENSION 1024 DIST COSINE T
 DEFINE TABLE proves TYPE RELATION FROM fact TO fact SCHEMAFULL;
 DEFINE FIELD reason on proves TYPE option<string>;
 
+DEFINE TABLE email TYPE NORMAL SCHEMAFULL;
+DEFINE FIELD address ON email TYPE string ASSERT string::is::email(address);
+
 DEFINE FUNCTION fn::add_k_v($obj: object, $key: any, $val: any) {
 
 	LET $es = object::entries($obj);

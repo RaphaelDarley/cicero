@@ -98,3 +98,4 @@ select reason, out.id as id, out.data as data from $rels
 select * from fact where data ~ "vatican"
 select * from fact where data ~ "Vatican"
 exit
+create foo:1..2

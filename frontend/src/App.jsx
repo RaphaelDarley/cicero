@@ -12,7 +12,7 @@ function App() {
     setIsLoading(true);
     try {
       // Replace this with your actual API call
-      const response = await fetch("https://cicero.darley.dev/api/query", {
+      const response = await fetch("https://cicero.darley.dev/api/newsletter_add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,15 +57,10 @@ function App() {
         </div>
       </div>
       <div className="heading1">
-        <h1>AI FACT CHECKER</h1>
+        <h1>Sign up for Updates</h1>
       </div>
       <div className="app-container">
         <InputForm onSubmit={handleSubmit} />
-        {isLoading && <p>Loading...</p>}
-        {result && <ResultDisplay result={result} />}
-        {result && result.graphData && (
-          <GraphDisplay graphData={result.graphData} />
-        )}
       </div>
     </>
   );

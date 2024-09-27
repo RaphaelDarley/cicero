@@ -76,6 +76,16 @@ async def ingest(request: Request):
     print(f"ingesting: {body_str}")
     await ingest_str(body_str)
 
+@app.api_route("/newsletter_add", methods=["POST", "GET"])
+async def newsletter_add(request: Request):
+    body = await request.body()
+    body_str = body.decode("utf-8")
+    print(f"adding email: {body_str}")
+    db = Surreal("ws://127.0.0.1:8001/rpc")
+    await db.connect()
+    await db.use('cicero', 'cicero')
+    await db.query('create email set address = $email', {"email" : body_str})
+
 async def ingest_str(doc: str, source=None):
     if len(doc) < 2:
         return None

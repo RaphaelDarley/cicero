@@ -17,10 +17,10 @@ function InputForm({ onSubmit }) {
         className="input"
         value={statement}
         onChange={(e) => setStatement(e.target.value)}
-        placeholder="Enter statement to fact check..."
+        placeholder="john.doe@example.com"
         required
       />
-      <button type="submit">Check Fact</button>
+      <button type="submit">Sign up</button>
     </form>
   );
 }
