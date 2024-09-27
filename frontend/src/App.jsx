@@ -56,10 +56,8 @@ function App() {
           <img src={aiImage} alt="Apex" className="Ai" />
         </div>
       </div>
-      <div className="heading1">
-        <h1>Sign up for Updates</h1>
-      </div>
       <div className="app-container">
+        <h1>Sign up for Updates</h1>
         <InputForm onSubmit={handleSubmit} />
       </div>
     </>
